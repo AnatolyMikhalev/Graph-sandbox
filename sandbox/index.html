@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ru" dir="ltr">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sandbox to create new algorithms</title>
+
+  <meta http-equiv="cleartype" content="on">
+  <script src="../i/js/dev/jquery-2.0.3.js"></script>
+
+  <link rel="stylesheet" charset="UTF-8" type="text/css" href="css1588510840.css" />
+
+  <script src="../i/js/dev/jquery-ui.js"></script>
+  <script src="../i/js/dev/jquery.feedback_me.js"></script>
+  <script src="../script/texts.js"></script>
+  <script src="../script/point.js"></script>
+  <script src="../script/EdgeModel.js"></script>
+  <script src="../script/VertexModel.js"></script>
+  <script src="../script/BaseVertex.js"></script>
+  <script src="../script/BaseEdge.js"></script>
+  <script src="../script/BaseVertexDrawer.js"></script>
+  <script src="../script/BaseEdgeDrawer.js"></script>
+  <script src="../script/BaseBackgroundDrawer.js"></script>
+  <script src="../script/Algorithms.js"></script>
+  <script src="../script/EventHandlers.js"></script>
+  <script src="../script/GraphMLCreator.js"></script>
+  <script src="../script/Graph.js"></script>
+  <script src="../script/EnumVertices.js"></script>
+  <script src="../script/utils.js"></script>
+  <script src="../script/Application.js"></script>
+  <script src="../script/main.js"></script>
+  <script src="../script/BaseTraversal.js"></script>
+  <script src="../script/plugins/Coloring.js"></script>
+  <script src="../script/plugins/GraphReorder.js"></script>
+  <script src="../script/plugins/VerticesDegree.js"></script>
+</head>
+
+<body>
+  <div class="container page-wrap" id="mainContainer">
+    <!--            <div class="header"> -->
+    <nav class="navbar navbar-default" id="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+            data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Главная</a></li>
+            <li class="dropdown"> <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                aria-expanded="false"> Создать граф <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">По матрице смежности</a></li>
+                <li><a href="#">По матрице инцидентности</a></li>
+                <li><a href="#">По списку рёбер</a></li>
+              </ul>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </nav>
+    <div class="content">
+
+      <section>
+        <ul class="nav nav-pills">
+
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
+              aria-expanded="false">
+              Граф <span class="caret"></span></button>
+            <ul class="dropdown-menu" role="menu">
+              <li>
+                <button type="button" class="btn btn-default btn-sm btn-submenu" id="NewGraph"> Создать граф </button>
+              </li>
+              <li class="divider" style="display: none;"></li>
+              <li style="display: none;">
+                <button type="button" class="btn btn-default btn-sm btn-submenu" id="SaveGraph"> Сохранить </button>
+              </li>
+              <li class="divider" style="display: none;"></li>
+              <li style="display: none;">
+                <button type="button" class="btn btn-default btn-sm btn-submenu" id="SaveFullGraphImage">Сохранить
+                  изображение графа</button>
+              </li>
+              <li style="display: none;">
+                <button type="button" class="btn btn-default btn-sm btn-submenu" id="SaveGraphImage">Снимок рабочей
+                  области</button>
+              </li>
+              <li style="display: none;">
+                <button type="button" class="btn btn-default btn-sm btn-submenu" id="SavePrintGraphImage">Изображение
+                  графа для печати (ч/б) </button>
+              </li>
+              <li class="divider hidden-phone"></li>
+              <li>
+                <button type="button" class="btn btn-default btn-sm btn-submenu" id="ExportGraph"> Экспортировать
+                  граф</button>
+              </li>
+
+              <li>
+                <input type="file" id="ImportGraphFiles" accept=".graphml" style="display:none"
+                  onchange="handelImportGraph(this.files)">
+                <button type="button" class="btn btn-default btn-sm btn-submenu" id="ImportGraph">Импортировать
+                  граф</button>
+              </li>
+
+              <li class="divider"></li>
+              <li>
+                <button type="button" class="btn btn-default btn-sm btn-submenu" id="ShowAdjacencyMatrix"> Матрица
+                  смежности</button>
+              </li>
+              <li>
+                <button type="button" class="btn btn-default btn-sm btn-submenu" id="ShowIncidenceMatrix">Матрица
+                  инцедентности </button>
+              </li>
+              <li>
+                <button type="button" class="btn btn-default btn-sm btn-submenu" id="ShowDistanceMatrix">Матрица
+                  расстояний </button>
+              </li>
+              <li>
+                <button type="button" class="btn btn-default btn-sm btn-submenu" id="GroupRename">Групповое
+                  переименование </button>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <button type="button" class="btn btn-default btn-sm btn-submenu" id="DeleteAll"> Удалить всё </button>
+              </li>
+            </ul>
+          </div>
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
+              aria-expanded="false"><span>
+                Вид </span><span class="caret hidden-phone"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+              <li> <button type="button" class="btn btn-default btn-sm btn-submenu" id="Zoom100">100% </button> </li>
+              <li> <button type="button" class="btn btn-default btn-sm btn-submenu" id="Zoom50"> 50% </button> </li>
+              <li> <button type="button" class="btn btn-default btn-sm btn-submenu" id="Zoom25"> 25% </button> </li>
+              <li> <button type="button" class="btn btn-default btn-sm btn-submenu" id="ZoomFit"> По размеру
+                  графа</button> </li>
+              <li class="divider"></li>
+              <li> <button type="button" class="btn btn-default btn-sm btn-submenu" id="ZoomIn"> Увеличить <span
+                    style="float:right">+</span></button></li>
+              <li> <button type="button" class="btn btn-default btn-sm btn-submenu" id="ZoomOut"> Уменьшить <span
+                    style="float:right">-</span></button></li>
+              <li class="divider"></li>
+              <li> <button type="button" class="btn btn-default btn-sm btn-submenu" id="MoveWorspace"> Move workspace
+                </button> </li>
+            </ul>
+          </div>
+          <button type="button" class="btn btn-default btn-sm" id="Default"><span> По умолчанию
+              <sub style="color:#AAAAAA">m</sub></span></button>
+          <button type="button" class="btn btn-primary btn-sm" id="AddGraph"><span> Добавить
+              вершину <sub style="color:#AAAAAA">v</sub></span></button>
+          <button type="button" class="btn btn-default btn-sm" id="ConnectGraphs"><span> Соединить
+              вершины <sub style="color:#AAAAAA">e</sub></span></button>
+
+          <!-- Algorithms -->
+
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
+              aria-expanded="true" id="openAlgorithmList">
+              Алгоритмы </span><span class="caret"></span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right" role="menu" id="algorithmList" style="right: -64.3594px;">
+
+              <button type="button" class="btn btn-primary categoryButton" id="algorithmCategoryBtn1">
+                <span class="glyphicon glyphicon-chevron-down fa-fw" name="showMark"></span>
+                <span class="glyphicon glyphicon-chevron-right fa-fw" name="hideMark" style="display: none;"></span>
+                Поиск путей </button>
+              <div id="algorithmCategoryElements1">
+                <div class="dropdown-item" style="display: none;" id="algTopic1"><button type="button"
+                    class="btn btn-default btn-sm" style="width: 100%; text-align: left; border: none;" id=""><span
+                      class="glyphicon glyphicon-search fa-fw"></span> <span></span></button></div>
+
+              </div>
+
+              <button type="button" class="btn btn-primary categoryButton" id="algorithmCategoryBtn0">
+                <span class="glyphicon glyphicon-chevron-down fa-fw" name="showMark"></span>
+                <span class="glyphicon glyphicon-chevron-right fa-fw" name="hideMark" style="display: none;"></span>
+                Другие алгоритмы </button>
+              <div id="algorithmCategoryElements0">
+                <div class="dropdown-item" style="display: none;" id="algTopic0"><button type="button"
+                    class="btn btn-default btn-sm" style="width: 100%; text-align: left; border: none;" id=""><span
+                      class="glyphicon glyphicon-search fa-fw"></span> <span></span></button></div>
+              </div>
+
+            </div>
+          </div>
+
+          <!--                   -->
+
+          <button type="button" class="btn btn-default btn-sm" id="DeleteObject"> Удалить <sub
+              style="color:#AAAAAA">r</sub></span></button>
+
+
+          <div class="btn-group hidden-phone" role="group">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
+              aria-expanded="false" id="openSettings">
+              <span> Настройки </span><span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right" role="menu" id="Settings">
+              <li> <button type="button" class="btn btn-default btn-sm btn-submenu" id="SetupVertexStyle">Обычных
+                  вершин</button> </li>
+              <li> <button type="button" class="btn btn-default btn-sm btn-submenu"
+                  id="SetupVertexStyleSelected">Выделенных вершин</button> </li>
+              <li class="divider"></li>
+              <li> <button type="button" class="btn btn-default btn-sm btn-submenu" id="SetupEdgeStyle">Обычных
+                  дуг</button> </li>
+              <li> <button type="button" class="btn btn-default btn-sm btn-submenu"
+                  id="SetupEdgeStyleSelected">Выделенных дуг</button> </li>
+              <li class="divider"></li>
+              <li> <button type="button" class="btn btn-default btn-sm btn-submenu" id="SetupBackgroundStyle">Цвет
+                  фона</button> </li>
+            </ul>
+          </div>
+
+          <button type="button" class="btn btn-default btn-sm" id="GraphUndo" style="display: none;"> Отменить <sub
+              style="color:#AAAAAA">crtl+z</sub></span></button>
+        </ul>
+      </section>
+
+      <section>
+        <div id="message" class="alert alert-success" role="alert">Граф</div>
+      </section>
+
+      <section id="canvasSection">
+        <span id="CanvasMessage"></span>
+        <button type="button" class="btn btn-default btn-sm hidden-phone" id="Fullscreen"><span
+            class="glyphicon glyphicon-resize-full fa-fw" id="FullscreenIcon"></span></button>
+        <canvas id="canvas">Ваш браузер не поддерживается. Попробуйте обновить ваш браузер до последней версии.</canvas>
+        <div id="developerTools" class="well well-sm">
+          <h4>Создать алгоритм</h4> <span class="glyphicon glyphicon-resize-full fa-fw leftTopPosition"
+            id="devToolsZoom"></span>
+          <span>Вставьте ваш алгоритм ниже и нажмите "Выполнить"</span>
+          <textarea id="userScript">
+        </textarea>
+          <input type="button" value="Run" id="runUserScript" class="btn btn-success btn-sm" />
+          <input type="button" value="Submit to site" id="submitUserScript" class="btn btn-default btn-sm"
+            style="float: right;" />
+        </div>
+      </section>
+
+      <section class="translation">
+        <div id="addEdge">
+          <form>
+            <fieldset>
+              <div id="EdgeWeightControls">
+                <label id="WeightLabel">Вес дуги&nbsp; </label> <input type="range" id="EdgeWeightSlider" min="0"
+                  max="29" value="0"
+                  oninput="document.getElementById('EdgeWeight').value = (this.value > 0 ? this.value : 'has no weight');"
+                  onchange="document.getElementById('EdgeWeight').value = (this.value > 0 ? this.value : 'has no weight');">
+                &nbsp; &nbsp;<input type="text" name="edgeWeight" value="has no weight" id="EdgeWeight"
+                  class="inputBox">
+              </div>
+              <div id="EdgesPresets">
+                <span
+                  onClick="document.getElementById('EdgeWeight').value='has no weight'; document.getElementById('EdgeWeightSlider').value=0;"
+                  style="cursor: pointer" class="defaultWeigth">ненагруженный</span>
+                <span
+                  onClick="document.getElementById('EdgeWeight').value='1'; document.getElementById('EdgeWeightSlider').value=1;"
+                  style="cursor: pointer" class="defaultWeigth">1</span>
+              </div>
+              <div id="EdgeLabelControls">
+                <label id="EdgeLabel">Текст над дугой</label>&nbsp;&nbsp;<input type="text" name="edgeLable" value=""
+                  id="EdgeLable" class="inputBox">
+              </div>
+              <div id="NewEdgeAction">
+                <div class="InlineStyle PaddingRight">
+                  <input class="form-check-input" type="radio" name="NewEdgeActionValue" id="RadiosReplaceEdge"
+                    value="replace" checked>
+                  <label for="RadiosReplaceEdge">
+                    заменить текущую </label>
+                </div>
+                <div class="InlineStyle PaddingRight">
+                  <input class="form-check-input" type="radio" name="NewEdgeActionValue" id="RadiosAddEdge" value="add">
+                  <label for="RadiosAddEdge" id="RadiosAddEdgeLabel">
+                    добавить (мультиграф) </label>
+                </div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+
+        <div id="addVertex">
+          <form>
+            <fieldset>
+              <label id="VertexTitleLable">
+                <p>Введите текст</p> <input type="text" name="VertextTitle" value="Title" id="VertexTitle"
+                  class="inputBox">
+              </label>
+              <br /><br /><button type="button" id="groupRenameButton" class="btn btn-default btn-xs hidden-phone">
+                Групповое переименование </button>
+            </fieldset>
+          </form>
+        </div>
+
+        <div id="GroupRenameDialog">
+          <form>
+            <fieldset>
+              <p>Введите текст для каждой вершины в отдельную строку</p> <textarea name="VertextTitleList"
+                id="VertextTitleList" wrap="off" rows="8"></textarea>
+            </fieldset>
+          </form>
+        </div>
+
+        <div id="adjacencyMatrix">
+          <form>
+            <fieldset>
+              <p>Задайте матрицу смежности. Используйте запятую "," в качестве разделителя</p>
+              <p id="AdjacencyMatrixMultiGraphDesc">Для мультиграфа матрица содержит значения минимальных дуг между
+                вершинами.
+              </p>
+              <textarea name="adjacencyMatrixField" id="AdjacencyMatrixField" wrap="off"></textarea>
+              <p id="BadMatrixFormatMessage">Мартрица имеет неправильный формат. Используйте запятую "," в качестве
+                разделителя. Матрица должна иметь одинаковое количество столбцов и строк.
+              </p>
+            </fieldset>
+          </form>
+        </div>
+
+        <div id="incidenceMatrix">
+          <form>
+            <fieldset>
+              <p>Задайте матрицу инцидентности. Используйте запятую "," в качестве разделителя.</p>
+              <textarea name="incidenceMatrixField" id="IncidenceMatrixField" wrap="off"></textarea>
+              <p id="BadIncidenceMatrixFormatMessage">Мартрица имеет неправильный формат. Используйте запятую "," в
+                качестве разделителя.</p>
+            </fieldset>
+          </form>
+        </div>
+
+        <div id="floidMatrix">
+          <form>
+            <fieldset>
+              <p>Матрица минимальных расстояний графа</p>
+              <textarea name="floidMatrixField" id="FloidMatrixField" wrap="off"></textarea>
+            </fieldset>
+          </form>
+        </div>
+
+        <div id="saveDialog">
+          <form>
+            <fieldset>
+              <p> сохранён и будет доступен по ссылке: <br />
+                <input type="text" name="graphName" id="GraphName" onClick="this.select();">
+              </p>
+            </fieldset>
+          </form>
+        </div>
+
+        <div id="sentAlgorithm" title="Algorithm was sent">
+          <p>Ваш алгоритм отправлен на модерацию и в случае успеха он будет добавлен на сайт.</p>
+        </div>
+
+
+        <div id="matrixError" class="translation">
+          <div> Ошибка создания графа. Матрица
+            смежности имеет неправильный формат. Нажимте кнопку "исправить матрицу" чтобы исправить матрицу или кнопку
+            "справка" чтобы открыть справку о формате матрицы</div>
+        </div>
+
+        <div id="matrixErrorInc" class="translation">
+          <div> Ошибка создания графа. Матрица
+            инцидентности имеет неправильный формат. Нажимте кнопку "исправить матрицу" чтобы исправить матрицу или
+            кнопку "справка" чтобы открыть справку о формате матрицы</div>
+        </div>
+
+
+        <div id="SetupVertexStyleDialog">
+          <form>
+            <fieldset>
+              <div class="form-group row">
+                <label for="vertexFillColor" class="col-sm-5 col-form-label">Основной цвет</label>
+                <div class="col-sm-5">
+                  <input type="color" class="form-control" id="vertexFillColor" value="#FFAA22">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="vertexStrokeColor" class="col-sm-5 col-form-label">Цвет обводки</label>
+                <div class="col-sm-5">
+                  <input type="color" class="form-control" id="vertexStrokeColor" value="#FFAA22">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="vertexStrokeSize" class="col-sm-5 col-form-label">Толщина</label>
+                <div class="col-sm-5">
+                  <input type="number" class="form-control" id="vertexStrokeSize" placeholder="10">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="vertexTextColor" class="col-sm-5 col-form-label">Цвет текста</label>
+                <div class="col-sm-5">
+                  <input type="color" class="form-control" id="vertexTextColor" value="#FFAA22">
+                </div>
+              </div>
+            </fieldset>
+          </form>
+
+          <canvas id="VertexPreSelect and move objects by " width="300" height="150"></canvas>
+        </div>
+
+        <div id="SetupEdgeStyleDialog">
+          <form>
+            <fieldset>
+              <div class="form-group row">
+                <label for="edgeStrokeColor" class="col-sm-5 col-form-label">Основной цвет</label>
+                <div class="col-sm-5">
+                  <input type="color" class="form-control" id="edgeStrokeColor" value="#FFAA22">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="edgeTextColor" class="col-sm-5 col-form-label">Цвет текста</label>
+                <div class="col-sm-5">
+                  <input type="color" class="form-control" id="edgeTextColor" value="#FFAA22">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="edgeFillColor" class="col-sm-5 col-form-label">Цвет фона</label>
+                <div class="col-sm-5">
+                  <input type="color" class="form-control" id="edgeFillColor" value="#FFAA22">
+                </div>
+              </div>
+            </fieldset>
+          </form>
+
+          <canvas id="EdgePreview" width="300" height="150"></canvas>
+        </div>
+
+        <div id="SetupBackgroundStyleDialog">
+          <form>
+            <fieldset>
+              <div class="form-group row">
+                <label for="bacgkroundColor" class="col-sm-5 col-form-label">Цвет</label>
+                <div class="col-sm-5">
+                  <input type="color" class="form-control" id="backgroundColor" value="#FFAA22">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="backgroundTransporent" class="col-sm-5 col-form-label">Прозрачность</label>
+                <div class="col-sm-5">
+                  <input type="range" min="0" max="1" step="0.1" id="backgroundTransporent">
+                </div>
+              </div>
+            </fieldset>
+          </form>
+
+          <canvas id="BackgroundPreview" width="300" height="150"></canvas>
+        </div>
+
+        <p id="MoveCursorForMoving" class="translation">Перетащите курсор, чтобы перемещать объекты</p>
+        <p id="SelectAndMoveObject" class="translation">Выберите и перемещайте объекты с помощью мыши или перемещайте
+          рабочую область.</p>
+        <p id="MoveCursorForMoving" class="translation">Перетащите курсор, чтобы перемещать объекты</p>
+        <p id="clickToAddVertex" class="translation">Щелкните на рабочей области, чтобы добавить новую вершину. <span
+            style="float:right;">Нумерация вершин <select id="enumVertexsText"></select></span></p>
+        <p id="selectFisrtVertextToConnect" class="translation">Выберите первую вершину ребра</p>
+        <p id="selectSecondVertextToConnect" class="translation">Выберите вторую вершину ребра</p>
+        <p id="selectStartShortPathVertex" class="translation">Выберите начальную вершину кратчайшего пути</p>
+        <p id="selectFinishShortPathVertex" class="translation">Выберите конечную вершину кратчайшего пути</p>
+        <p id="shortPathResult" class="translation">Длина кратчайшего пути составляет %d</p>
+        <p id="pathNotExists" class="translation">Путь не существует</p>
+        <p id="selectObjectToDelete" class="translation">Кликните на объект для удаления</p>
+        <p id="AddEdge" class="translation">Добавить ребро</p>
+        <p id="OrintEdge" class="translation">Ориентированный</p>
+        <p id="NotOrintdge" class="translation">Неориентированный</p>
+        <p id="AdjacencyMatrixText" class="translation">Матрица смежности</p>
+        <p id="Save" class="translation">Сохранить</p>
+        <p id="Cancel" class="translation">Отмена</p>
+        <p id="shortestDist" class="translation">Самое короткое расстояние - </p>
+        <p id="IncidenceMatrixText" class="translation">Матрица инцидентности</p>
+        <p id="saveDialogTitle" class="translation">Сохранение графа</p>
+        <p id="closeButton" class="translation">Закрыть</p>
+        <p id="connectedComponentResult" class="translation">Количество связных компонент - </p>
+        <p id="sickConnectedComponentResult" class="translation">Количество слабосвязных компонент - </p>
+        <p id="whatDoYouThink" class="translation">Что вы думаете о сайте?</p>
+        <p id="name" class="translation">Имя (электронная почта для обратной связи)</p>
+        <p id="feedback" class="translation">Обратная связь</p>
+        <p id="send" class="translation">Отправить</p>
+        <p id="writeToUs" class="translation">Чтобы задать нам вопрос или отправить комментарий, напишите нам на</p>
+        <p id="fixMatrixButton" class="translation">фиксировать матрицу</p>
+        <p id="matrixHelp" class="translation">помощь</p>
+        <p id="wronMatrixTitle" class="translation">Матрица имеет неверный формат</p>
+
+        <p id="saveImageDialogTitle" class="translation">Сохранить изображение графа</p>
+
+        <p id="fullReport" class="translation">Полный отчет</p>
+        <p id="shortReport" class="translation">Краткий отчет</p>
+
+        <p id="hasNotEulerianLoop" class="translation">Граф не имеет эйлерова цикла</p>
+        <p id="hasEulerianLoop" class="translation">Граф имеет эйлеров цикл</p>
+        <p id="processing" class="translation">Обработка...</p>
+
+        <p id="customEnumVertex" class="translation">Настроить текст</p>
+        <p id="addVertexText" class="translation">Добавить вершину</p>
+
+        <p id="renameVertex" class="translation">Переименовать вершину</p>
+        <p id="renameText" class="translation">Переименовать</p>
+        <p id="inputMatrix" class="translation"></p>
+        <p id="separator" class="translation"></p>
+        <p id="inputIncidenceMatrix" class="translation"></p>
+        <p id="currentLanguage" class="translation">en</p>
+        <p id="editWeight" class="translation">Изменить вес</p>
+        <p id="noWeight" class="translation">не имеет веса</p>
+        <p id="groupeRenameText" class="translation">Переименовать группу</p>
+        <p id="voteText" class="translation">Голосовать</p>
+        <p id="recommend_algorithm" class="translation">Рекомендуемые алгоритмы</p>
+
+        <p id="hasNotEulerianPath" class="translation">Граф не имеет эйлерова пути</p>
+        <p id="hasEulerianPath" class="translation">Граф имеет эйлеров путь</p>
+
+        <p id="graphOfMinDist" class="translation">Граф минимальных расстояний</p>
+        <p id="checkToSave" class="translation">Проверьте, чтобы сохранить</p>
+        <p id="showDistMatrix" class="translation">Показать матрицу расстояний</p>
+        <p id="distMatrixText" class="translation">Матрица расстояний</p>
+
+        <p id="selectStartVertexForMaxFlow" class="translation">Выберите источник максимального потока</p>
+        <p id="selectFinishVertexForMaxFlow" class="translation">Выберите сток максимального потока</p>
+        <p id="maxFlowResult" class="translation">Максимальный поток из %2 в %3 равен %1</p>
+        <p id="flowNotExists" class="translation">Поток из %1 в %2 не существует</p>
+
+        <p id="sourceVertex" class="translation">Источник</p>
+        <p id="sinkVertex" class="translation">Сток</p>
+
+        <p id="hasNotHamiltonianLoop" class="translation">Граф не имеет гамильтонова цикла</p>
+        <p id="hasHamiltonianLoop" class="translation">Граф имеет гамильтонов цикл</p>
+
+        <p id="hasNotHamiltonianPath" class="translation">Граф не имеет гамильтонова пути</p>
+        <p id="hasHamiltonianPath" class="translation">Граф имеет гамильтонов путь</p>
+
+        <p id="startTraversal" class="translation">Выберите начальную вершину обхода</p>
+        <p id="traversalOrder" class="translation">Порядок обхода: </p>
+
+        <p id="curveEdge" class="translation">Изгиб ребра</p>
+        <p id="undoTranslate" class="translation">Отменить</p>
+        <p id="saveGraph" class="translation">Сохранить граф</p>
+        <p id="default" class="translation">По умолчанию</p>
+        <p id="vertexDrawStyle" class="translation">Стиль вершин</p>
+        <p id="edgeDrawStyle" class="translation">Стиль ребер</p>
+        <p id="backgroundStyle" class="translation">Цвет фона</p>
+
+        <p id="graphIsMultiMessage" class="translation">Мультиграф не поддерживает все алгоритмы</p>
+        <p id="graphIsGeneralMessage" class="translation"></p>
+        <p id="defaultWeightPreset" class="translation">нет веса</p>
+
+        <p id="selectGroupMac" class="translation">Используйте Cmd⌘, чтобы выбрать несколько объектов.</p>
+        <p id="selectGroupWin" class="translation">Используйте Ctrl, чтобы выбрать несколько объектов.</p>
+        <p id="dragSelectedGroup" class="translation">Перетаскивать группу.</p>
+        <p id="copySelectedGroup" class="translation">Копировать группу</p>
+        <p id="removeSelectedGroup" class="translation">Удалить группу</p>
+
+        <p id="BFSName" class="translation">Поиск в ширину</p>
+        <p id="ColoringName" class="translation">Окраска графа</p>
+        <p id="findConnectedComponent" class="translation">Поиск связных компонент</p>
+        <p id="DFSName" class="translation">Поиск в глубину</p>
+        <p id="EulerinLoopName" class="translation">Поиск эйлерова цикла</p>
+
+
+        <p id="EulerinPath" class="translation">Найти Эйлеров путь</p>
+        <p id="FloidName" class="translation">Алгоритм Флойда - Уоршелла</p>
+        <p id="GraphReorder" class="translation">Упорядочить граф</p>
+        <p id="HamiltoianCycleName" class="translation">Найти Гамильтонов цикл</p>
+        <p id="HamiltonianPath" class="translation">Найти Гамильтонов путь</p>
+        <p id="MaxFlowName" class="translation">Найти максимальный поток</p>
+        <p id="minimumSpanningTree" class="translation">Поиск минимального остовного дерева</p>
+        <p id="modernGraphStyleName" class="translation">Визуализация на основе веса</p>
+        <p id="RadiusAndDiameter" class="translation">Найти радиус и диаметр графа</p>
+        <p id="findShortPathName" class="translation">Найти кратчайший путь с помощью алгоритма Дейкстры</p>
+        <p id="VerticesDegreeName" class="translation">Вычислить степени вершин</p>
+        <p id="MinSpanningTreeResult" class="translation">Вес минимального остовного дерева равен </p>
+        <p id="MinSpanningIgnoreDir" class="translation">При вычислении мы игнорировали направление ребер.</p>
+        <p id="MinSpanningNotConnected" class="translation">Граф несвязный</p>
+
+        <!-- IsomorphismCheck.js -->
+        <p id="SelectFirstGraphIsomorphismCheck" class="translation">Выберите первый граф для проверки изоморфизма.
+          Нажмите на любую вершину графа</p>
+        <p id="SelectSecondGraphIsomorphismCheck" class="translation">Выберите второй граф для проверки изоморфизма.
+          Нажмите на любую вершину графа</p>
+        <p id="SelectFirstGraphPatternCheck" class="translation">Выберите шаблонный граф, нажав на любую вершину графа
+        </p>
+        <p id="SelectSecondGraphForSearchSubgraph" class="translation">Выберите граф, в котором мы будем искать
+          изоморфные подграфы. Нажмите на любую вершину этого графа</p>
+        <p id="GraphsIsomorph" class="translation">Графы изоморфны</p>
+        <p id="GraphsNotIsomorph" class="translation">Графы не изоморфны</p>
+        <p id="NumberOfIsomorphSubgraphIs" class="translation">Количество изоморфных подграфов равно </p>
+        <p id="GraphHasNoIsomorphSubgraph" class="translation">Граф не содержит изоморфных подграфов</p>
+        <p id="SearchIsomorphSubgraph" class="translation">Поиск изоморфных подграфов</p>
+        <p id="SubgraphNo" class="translation">Изоморфный подграф №</p>
+        <p id="GraphHasNoAtleast2Graphs" class="translation">Для использования алгоритма необходимо создать 2 отдельных
+          графа</p>
+        <p id="IsomorphismCheck" class="translation">Проверка изоморфизма графов</p>
+        <!-- RadiusAndDiameter.js -->
+        <p id="GraphIsDisconnected" class="translation">Граф не связный</p>
+        <p id="GraphIsTrivial" class="translation">Граф содержит только одну вершину</p>
+        <p id="GraphRadius" class="translation">Радиус графа</p>
+        <p id="GraphDiameter" class="translation">Диаметр графа</p>
+        <p id="VertexCentral" class="translation">Центральная</p>
+        <p id="VertexPeripheral" class="translation">Периферийная</p>
+        <!-- VerticesDegree.js -->
+        <p id="MaximumDegreeOfGraph" class="translation">Максимальная степень графа равна</p>
+        <!-- Coloring.js -->
+        <p id="ColorNumber" class="translation">Количество цветов равно</p>
+        <p id="Done" class="translation">Готово</p>
+        <p id="ActionText" class="translation">Действия</p>
+        <p id="CommonEdgeStyleText" class="translation">Обычный стиль ребра</p>
+        <p id="SelectedEdgeStyleText" class="translation">Выбранный стиль ребра</p>
+        <p id="CommonVertexStyleText" class="translation">Обычный стиль вершины</p>
+        <p id="SelectedVertexStyleText" class="translation">Выбранный стиль вершины</p>
+        <!-- FindAllPatches.js -->
+        <p id="FindAllPathes" class="translation">Найти все пути</p>
+        <p id="NumberOfPathesFrom" class="translation">Количество путей от </p>
+        <p id="To" class="translation"> до </p>
+        <p id="Are" class="translation"> равно </p>
+        <p id="PathN" class="translation">Путь №</p>
+        <p id="SelectFinishVertex" class="translation">Выбрать финишную вершину</p>
+        <p id="SelectStartVertex" class="translation">Выбрать стартовую вершину</p>
+        <p id="findAllPathsFromVertex" class="translation">Найти все кратчайшие пути от вершины</p>
+        <p id="distanceFrom" class="translation">Расстояние от </p>
+        <p id="pathTo" class="translation">Путь к </p>
+        <p id="UseContextMenuText" class="translation">Используйте контекстное меню для дополнительных дейстFвий.</p>
+
+      </section>
+    </div>
+
+  </div>
+
+  <script>
+    if (typeof preLoadPage == 'function') {
+      preLoadPage();
+    }
+  </script>
+  <script src="../i/js/dev/bootstrap3/bootstrap.min.js">
+    $('.dropdown-toggle').dropdown();
+  </script>
+  <script>
+    if (typeof postLoadPage == 'function') {
+      postLoadPage();
+    }
+
+    createAlgorithmMenu();
+  </script>
+</body>
+
+</html>
